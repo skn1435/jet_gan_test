@@ -2,6 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 
 import numpy as np
+import pandas as pd
 
 
 SIZE_BATCH = 256
@@ -46,6 +47,11 @@ def build_joint(generator, discriminator) :
 	model = keras.Sequential([generator, discriminator])
 	return model
 
+def write_image(data, fname) :
+	df = pd.DataFrame(data.reshape(16, 28*28))
+	df.to_csv(fname)
+
+
 def main() :
 	# build model
 	generator = build_generator()
@@ -73,6 +79,12 @@ def main() :
 		loss_gener = joint.train_on_batch(xx_noise_2, y_train_real)
 		# print
 		print("%d : Discr %f, Gener %f" % (i_epoch, loss_discr[0], loss_gener[0]))
+		# save image
+		xx_noise_3 = np.random.normal(0.0, 1.0, (16, 256))
+		x_train_gen_3 = generator.predict(xx_noise_3)
+		for i_image in range(16) :
+			fname_out = "image_%03d_gan_test.csv" % i_epoch
+			write_image(x_train_gen_3, fname_out)
 
 
 if __name__ == "__main__" :
