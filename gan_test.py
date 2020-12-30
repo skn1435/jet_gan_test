@@ -5,9 +5,9 @@ import numpy as np
 import pandas as pd
 
 
-SIZE_BATCH = 256
-SIZE_HALF_BATCH = 128
-N_EPOCH = 100
+SIZE_BATCH = 32
+SIZE_HALF_BATCH = 16
+N_EPOCH = 1000
 
 
 # train and test
@@ -78,12 +78,12 @@ def main() :
 		y_train_real = np.array([1] * SIZE_BATCH)
 		loss_gener = joint.train_on_batch(xx_noise_2, y_train_real)
 		# print
-		print("%d : Discr %f, Gener %f" % (i_epoch, loss_discr[0], loss_gener[0]))
+		print("%d / %d : Discr %f, Gener %f" % (i_epoch + 1, N_EPOCH, loss_discr[0], loss_gener[0]))
 		# save image
 		xx_noise_3 = np.random.normal(0.0, 1.0, (16, 256))
 		x_train_gen_3 = generator.predict(xx_noise_3)
-		for i_image in range(16) :
-			fname_out = "image_%03d_gan_test.csv" % i_epoch
+		if (i_epoch + 1) % 100 == 0 :
+			fname_out = "image_%04d_gan_test.csv" % (i_epoch + 1)
 			write_image(x_train_gen_3, fname_out)
 
 
