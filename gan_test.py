@@ -7,7 +7,7 @@ import pandas as pd
 
 SIZE_BATCH = 256
 SIZE_HALF_BATCH = 128
-N_EPOCH = 10
+N_EPOCH = 100
 
 
 # train and test
