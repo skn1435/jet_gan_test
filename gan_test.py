@@ -64,9 +64,9 @@ def main() :
 	generator = build_generator()
 	#generator.compile(optimizer = "adam", loss = "binary_crossentropy", metrics = ["accuracy"])
 	discriminator = build_discriminator()
-	discriminator.compile(optimizer = "adam", loss = "binary_crossentropy", metrics = ["accuracy"])
+	discriminator.compile(optimizer = keras.optimizers.Adam(lr = 0.0002, beta_1 = 0.5), loss = "binary_crossentropy", metrics = ["accuracy"])
 	joint = build_joint(generator, discriminator)
-	joint.compile(optimizer = "adam", loss = "binary_crossentropy", metrics = ["accuracy"])
+	joint.compile(optimizer = keras.optimizers.Adam(lr = 0.0002, beta_1 = 0.5), loss = "binary_crossentropy", metrics = ["accuracy"])
 	# train
 	(x_train, y_train), (x_test, y_test) = load_train_test()
 	for i_epoch in range(N_EPOCH) :
