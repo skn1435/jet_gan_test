@@ -7,7 +7,7 @@ import pandas as pd
 
 SIZE_BATCH = 32
 SIZE_HALF_BATCH = 16
-N_EPOCH = 1000
+N_EPOCH = 5000
 
 
 # train and test
@@ -29,6 +29,9 @@ def build_generator(dim_noise = 256, shape_image = [28, 28]) :
 	model.add(keras.layers.Dense(512))
 	model.add(keras.layers.LeakyReLU(alpha = 0.2))
 	model.add(keras.layers.BatchNormalization(momentum = 0.8))
+	model.add(keras.layers.Dense(1024))
+	model.add(keras.layers.LeakyReLU(alpha = 0.2))
+	model.add(keras.layers.BatchNormalization(momentum = 0.8))
 	model.add(keras.layers.Dense(np.prod(shape_image), activation = "sigmoid"))
 	model.add(keras.layers.Reshape(shape_image))
 	return model
@@ -36,6 +39,10 @@ def build_generator(dim_noise = 256, shape_image = [28, 28]) :
 def build_discriminator(shape_image = [28, 28]) :
 	model = keras.models.Sequential()
 	model.add(keras.layers.Dense(256, input_shape = shape_image))
+	model.add(keras.layers.LeakyReLU(alpha = 0.2))
+	model.add(keras.layers.Dense(128))
+	model.add(keras.layers.LeakyReLU(alpha = 0.2))
+	model.add(keras.layers.Dense(64))
 	model.add(keras.layers.LeakyReLU(alpha = 0.2))
 	model.add(keras.layers.Dense(32))
 	model.add(keras.layers.LeakyReLU(alpha = 0.2))
