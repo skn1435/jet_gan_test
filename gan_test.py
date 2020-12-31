@@ -18,33 +18,34 @@ def load_train_test() :
 	print(y_train.shape)
 	x_train = 2.0 * x_train / np.max(x_train) - 1.0
 	x_test = 2.0 * x_test / np.max(x_test) - 1.0
+	x_train = x_train.reshape(len(x_train), 28, 28, 1)
+	x_test = x_test.reshape(len(x_test), 28, 28, 1)
 	return (x_train, y_train), (x_test, y_test)
 
 # model
 def build_generator(dim_noise = 256, shape_image = [28, 28]) :
 	model = keras.models.Sequential()
-	model.add(keras.layers.Dense(256, input_dim = dim_noise))
+	model.add(keras.layers.Dense(64 * np.prod(shape_image) / 16, input_dim = dim_noise))
 	model.add(keras.layers.LeakyReLU(alpha = 0.2))
+	model.add(keras.layers.Reshape((int(shape_image[0] / 4), int(shape_image[1] / 4), 64)))
 	model.add(keras.layers.BatchNormalization(momentum = 0.8))
-	model.add(keras.layers.Dense(512))
+	model.add(keras.layers.UpSampling2D((2, 2)))
+	model.add(keras.layers.Conv2D(16, (3, 3), padding = "same"))
 	model.add(keras.layers.LeakyReLU(alpha = 0.2))
-	model.add(keras.layers.BatchNormalization(momentum = 0.8))
-	model.add(keras.layers.Dense(1024))
+	model.add(keras.layers.UpSampling2D((2, 2)))
+	model.add(keras.layers.Conv2D(1, (3, 3), padding = "same"))
 	model.add(keras.layers.LeakyReLU(alpha = 0.2))
-	model.add(keras.layers.BatchNormalization(momentum = 0.8))
-	model.add(keras.layers.Dense(np.prod(shape_image), activation = "sigmoid"))
-	model.add(keras.layers.Reshape(shape_image))
+	model.add(keras.layers.Reshape((shape_image[0], shape_image[1], 1)))
 	return model
 
 def build_discriminator(shape_image = [28, 28]) :
 	model = keras.models.Sequential()
-	model.add(keras.layers.Dense(256, input_shape = shape_image))
+	model.add(keras.layers.Conv2D(32, (3, 3), input_shape = (shape_image[0], shape_image[1], 1)))
 	model.add(keras.layers.LeakyReLU(alpha = 0.2))
+	model.add(keras.layers.Flatten())
 	model.add(keras.layers.Dense(128))
 	model.add(keras.layers.LeakyReLU(alpha = 0.2))
 	model.add(keras.layers.Dense(64))
-	model.add(keras.layers.LeakyReLU(alpha = 0.2))
-	model.add(keras.layers.Dense(32))
 	model.add(keras.layers.LeakyReLU(alpha = 0.2))
 	model.add(keras.layers.Dense(1, activation = "sigmoid"))
 	return model
