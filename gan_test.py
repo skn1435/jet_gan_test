@@ -41,7 +41,9 @@ def build_generator(dim_noise = N_DIM_RANDOM, shape_image = [28, 28]) :
 
 def build_discriminator(shape_image = [28, 28]) :
 	model = keras.models.Sequential()
-	model.add(keras.layers.Conv2D(32, (3, 3), input_shape = (shape_image[0], shape_image[1], 1)))
+	model.add(keras.layers.Conv2D(16, (3, 3), input_shape = (shape_image[0], shape_image[1], 1)))
+	model.add(keras.layers.LeakyReLU(alpha = 0.2))
+	model.add(keras.layers.Conv2D(64, (3, 3), input_shape = (shape_image[0], shape_image[1], 16)))
 	model.add(keras.layers.LeakyReLU(alpha = 0.2))
 	model.add(keras.layers.Flatten())
 	model.add(keras.layers.Dense(512))
